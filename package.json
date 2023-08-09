@@ -1,0 +1,27 @@
+{
+  "name": "reddit-javascript",
+  "version": "0.1.0",
+  "description": "A Freechains application replicating Reddit",
+  "main": "reddit.js",
+  "scripts": {
+    "test": "nodejs reddit.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LucasAmaralPires/Freechains-Node.git"
+  },
+  "keywords": [
+    "reddit",
+    "freechains",
+    "javascript"
+  ],
+  "author": "Lucas d'Amaral Pires",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LucasAmaralPires/Freechains-Node/issues"
+  },
+  "homepage": "https://github.com/LucasAmaralPires/Freechains-Node#readme",
+  "dependencies": {
+    "readline-sync": "^1.4.10"
+  }
+}
