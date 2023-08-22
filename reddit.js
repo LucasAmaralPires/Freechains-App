@@ -32,6 +32,10 @@ const options_select_chain = `
     7 - Return to Chain Menu
 `
 
+const options_peer_menu = `
+    Friends
+`
+
 var chains = [];
 var num_chains = 0;
 var pass_file;
@@ -113,7 +117,7 @@ async function select_chain()
                 msn_post = input.question("What do you want to post? \n");
                 if(msn_post != '') break;
             }
-            Main.main(["freechains", "chain", chains[num_chains], "post", "inline", msn_post], (ans) => {process.stdout.write(ans)});
+            Main.main(["freechains", "chain", chains[num_chains], "post", "inline", msn_post, `--sign=${pass_file[2]}`], (ans) => {process.stdout.write(ans)});
             await delay(2000);         
         }
         else if (num_answer === "2")
@@ -167,15 +171,19 @@ async function select_chain()
                 console.log("There are no messages in this chain");
             }
         }
-        else if (num_answer === "3")
+        else if (num_answer === "3") //Like
         {
+//            Main.main(["freechains", "chain", chains[num_chains], "like", hash[i]], (ans) => {block = ans;});
+                        
             return;
         }
-        else if (num_answer === "4")
+        else if (num_answer === "4") //Dislike
         {
+//            Main.main(["freechains", "chain", chains[num_chains], "dislike", hash[i]], (ans) => {block = ans;});
+
             return;
         }
-        else if (num_answer === "5")
+        else if (num_answer === "5") //Show Reputation Amount
         {
             return;
         }
