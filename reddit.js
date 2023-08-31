@@ -1,9 +1,10 @@
 #!/usr/bin/node
-/*
-const Main = require("../Main");
+
 const input = require('readline-sync');
-const crypto = require('crypto-js');
+const Main = require("../Main");
 var fs = require("fs");
+/*
+const crypto = require('crypto-js');
 
 const PUB0 = "47F815A7A0E529CA32E9B40E81CD4E63BBF4852B8993C515003C9C992ACEACAF"
 
@@ -42,7 +43,7 @@ const VERSION = "0.1.0";
 const HELP = `
 Usage:
 
-    reddit login
+    reddit login <username> <password> <?port>
 
     reddit create subreddit
     reddit join subreddit
@@ -59,14 +60,15 @@ Usage:
     reddit update
 `;
 
-/*
+function delay(time) {
+    return new Promise(resolve => setTimeout(resolve, time));
+}   
+
 var chains = [];
 var num_chains = 0;
 var pass_file;
 
-function delay(time) {
-    return new Promise(resolve => setTimeout(resolve, time));
-}   
+/*
 
 async function chain_menu()
 {
@@ -75,10 +77,6 @@ async function chain_menu()
         let num_answer = input.question(options_chain_menu);
         if(num_answer === "1")
         {
-            let name_chain = input.question("Please, insert name of the chain you want to create/join: ");
-
-            Main.main(["freechains", "chains", "join", name_chain, pass_file[1]], () => {})
-            await delay(2000);
         }
         else if(num_answer === "2")
         {
@@ -236,6 +234,23 @@ async function select_chain()
 
 async function main_reddit()
 {
+
+    while (true) {
+        let num_answer = input.question(options_main);
+        if(num_answer === "1")
+        {
+            await chain_menu();
+        }
+        else if(num_answer === "2") 
+        {
+        }
+        else console.log("Invalid number");
+    }
+}
+*/
+async function start()
+{
+    //COLOCAR O START DEPOIS DE VERIFICAR A SENHA
     let user = input.question("Please insert your username: ");
     Main.main(["freechains-host", "start", `/tmp/${user}`]);
     await delay(1000);
@@ -263,50 +278,60 @@ async function main_reddit()
     });
     await delay(1000);
 
-    while (true) {
-        let num_answer = input.question(options_main);
-        if(num_answer === "1")
+}
+
+async function create_join()
+{
+    let name_chain = input.question("Please, insert name of the chain you want to create/join: ");
+
+    Main.main(["freechains", "chains", "join", name_chain, pass_file[1]], () => {})
+    await delay(2000);
+
+}
+
+async function main(arg)
+{
+    if ((arg[0] == null) || (arg[0] == "help") || (arg[0] == "--help"))
+    {
+        console.log(HELP);
+    }
+    else if ((arg[0] == "version") || (arg[0] == "--version"))
+    {
+        console.log(VERSION);
+    }
+    else
+    {
+        var js = JSON.parse(fs.readFileSync("config.json"));
+        console.log(js);
+/*        switch (arg[0])
         {
-            await chain_menu();
-        }
-        else if(num_answer === "2") 
-        {
-            Main.main(["freechains-host", "stop"],() => {});
-            await delay(1000);    
-            process.exit();
-        }
-        else console.log("Invalid number");
+            case "login":
+                break;
+            case "update":
+                break;
+            case "create":
+                await create_join();
+                break;
+            case "join":
+                break;
+            case "list":
+                break;
+            case "leave":
+                break;
+            case "post":
+                break;
+            case "show":
+                break;
+            case "dislike":
+            case "like":
+                break;
+            case "search":
+                break;
+            default:
+                console.log("Command not recognized!");
+        }*/
     }
 }
-*/
-var arg = process.argv.slice(2);
-
-if ((arg[0] == null) || (arg[0] == "help") || (arg[0] == "--help"))
-{
-    console.log(HELP);
-}
-else if ((arg[0] == "version") || (arg[0] == "--version"))
-{
-    console.log(VERSION);
-}
-else
-{
-    switch (arg[0])
-    {
-        case "login":
-            break;
-        case "update":
-            break;
-        case "create":
-            break;
-        case "join":
-            break;
-        case "list":
-            break;
-        case "leave":
-            break;
-        case "post":
-            break;
-        }
-}
 //main_reddit();
+
+main(process.argv.slice(2));
