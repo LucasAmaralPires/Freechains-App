@@ -1,3 +1,5 @@
+#!/usr/bin/node
+/*
 const Main = require("../Main");
 const input = require('readline-sync');
 const crypto = require('crypto-js');
@@ -34,8 +36,30 @@ const options_select_chain = `
 
 const options_peer_menu = `
     Friends
-`
+`*/
 
+const VERSION = "0.1.0";
+const HELP = `
+Usage:
+
+    reddit login
+
+    reddit create subreddit
+    reddit join subreddit
+    reddit list subreddit
+    reddit leave subreddit
+
+    reddit post subreddit
+    reddit show subreddit message
+    reddit like subreddit message
+    reddit dislike subreddit message
+    reddit show subreddit reps
+
+    reddit search subreddit
+    reddit update
+`;
+
+/*
 var chains = [];
 var num_chains = 0;
 var pass_file;
@@ -80,7 +104,7 @@ async function like_message()
 {
 
 }
-*/
+
 
 async function select_chain()
 {
@@ -254,5 +278,35 @@ async function main_reddit()
         else console.log("Invalid number");
     }
 }
+*/
+var arg = process.argv.slice(2);
 
-main_reddit();
+if ((arg[0] == null) || (arg[0] == "help") || (arg[0] == "--help"))
+{
+    console.log(HELP);
+}
+else if ((arg[0] == "version") || (arg[0] == "--version"))
+{
+    console.log(VERSION);
+}
+else
+{
+    switch (arg[0])
+    {
+        case "login":
+            break;
+        case "update":
+            break;
+        case "create":
+            break;
+        case "join":
+            break;
+        case "list":
+            break;
+        case "leave":
+            break;
+        case "post":
+            break;
+        }
+}
+//main_reddit();

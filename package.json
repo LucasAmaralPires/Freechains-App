@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "A Freechains application replicating Reddit",
   "main": "reddit.js",
+  "bin": {
+    "reddit": "./reddit.js"
+  },
   "scripts": {
     "test": "nodejs reddit.js"
   },
