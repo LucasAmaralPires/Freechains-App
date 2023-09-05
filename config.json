@@ -1,6 +1,6 @@
 {
-  "login": true,
-  "current_select": 1,
+  "login": false,
+  "current_select": 0,
   "username": [
     {
       "user": "Testando",
@@ -10,8 +10,6 @@
       ],
       "port": "8330",
       "subreddits": [
-        "#teste",
-        "#teste2"
       ],
       "select_subreddit": ""
     },
@@ -23,10 +21,6 @@
       ],
       "port": "8331",
       "subreddits": [
-        "teste_reddit_1",
-        "teste_reddit_3",
-        "teste_reddit_4",
-        "teste_reddit_5"
       ],
       "select_subreddit": ""
     }
