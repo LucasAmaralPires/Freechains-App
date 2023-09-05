@@ -1,7 +1,34 @@
 {
-    "login": false,
-    "username": "",
-    "password": [],
-    "subreddits": [],
-    "select_subreddit": ""
+  "login": true,
+  "current_select": 1,
+  "username": [
+    {
+      "user": "Testando",
+      "password": [
+        "41783E6207C61E0ED6499C7EE800897E2930610623C3EDFAA8EE8F6ADE1593B5",
+        "DAF8C7C6A5B1127624007983F1A3235042F7382E9E1D859D9949E19A99DA528341783E6207C61E0ED6499C7EE800897E2930610623C3EDFAA8EE8F6ADE1593B5"
+      ],
+      "port": "8330",
+      "subreddits": [
+        "#teste",
+        "#teste2"
+      ],
+      "select_subreddit": ""
+    },
+    {
+      "user": "Teste-Reddit",
+      "password": [
+        "47F815A7A0E529CA32E9B40E81CD4E63BBF4852B8993C515003C9C992ACEACAF",
+        "07F3AE7D10A8AFB6145227A798B7B5B953380263C5E6CF88B8BE6C2CF8C0C8A047F815A7A0E529CA32E9B40E81CD4E63BBF4852B8993C515003C9C992ACEACAF"
+      ],
+      "port": "8331",
+      "subreddits": [
+        "teste_reddit_1",
+        "teste_reddit_3",
+        "teste_reddit_4",
+        "teste_reddit_5"
+      ],
+      "select_subreddit": ""
+    }
+  ]
 }

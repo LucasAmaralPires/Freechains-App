@@ -1,197 +1,42 @@
 #!/usr/bin/node
 
-const input = require('readline-sync');
 const Main = require("../Main");
 var fs = require("fs");
-/*
-const crypto = require('crypto-js');
-
-const PUB0 = "47F815A7A0E529CA32E9B40E81CD4E63BBF4852B8993C515003C9C992ACEACAF"
-
-const options_main = `
-    Main Menu
-    Please, select the number according to the action you want to take:
-    1 - Chain Menu
-    2 - Close application
-`
-const options_chain_menu = `
-    Chain Menu
-    Please, select the number according to the action you want to take:
-    1 - Create/Join chain
-    2 - Select chain
-    3 - Leave chain
-    4 - Return to Main Menu
-`
-
-const options_select_chain = `
-    Select Chain Menu
-    Please, select the number according to the action you want to take:
-    1 - Post in the chain
-    2 - Show previous content in the chain
-    3 - Like a message
-    4 - Dislike message
-    5 - Show reputation amount in chain
-    6 - Select another chain
-    7 - Return to Chain Menu
-`
-
-const options_peer_menu = `
-    Friends
-`*/
 
 const VERSION = "0.1.0";
 const HELP = `
 Usage:
 
-    reddit login <username> <password> <?port>
+    reddit login    <username>  <password>  <?port>
+    reddit logoff
 
-    reddit create subreddit
-    reddit join subreddit
-    reddit list subreddit
-    reddit leave subreddit
+    reddit create   <subreddit>
+    reddit join     <subreddit>
+    reddit leave    <subreddit>
+    reddit list
+    reddit select   <subreddit>
+    
+    reddit post     <message>
+*    reddit like     <number_message>
+*    reddit dislike  <number_message>
+*    reddit show     
 
-    reddit post subreddit
-    reddit show subreddit message
-    reddit like subreddit message
-    reddit dislike subreddit message
-    reddit show subreddit reps
-
-    reddit search subreddit
-    reddit update
+*    reddit search subreddit
+*    reddit update
 `;
 
 function delay(time) {
     return new Promise(resolve => setTimeout(resolve, time));
 }   
 
-var chains = [];
-var num_chains = 0;
-var pass_file;
+var js;
 
 /*
-
-async function chain_menu()
-{
-    while(true)
-    {
-        let num_answer = input.question(options_chain_menu);
-        if(num_answer === "1")
-        {
-        }
-        else if(num_answer === "2")
-        {
-            await select_chain()
-        }
-        else if(num_answer === "3")
-        {
-            let name_chain = input.question("Please, insert name of the chain you want to leave: ");
-
-            Main.main(["freechains", "chains", "leave", name_chain], () => {})
-            await delay(2000);
-        }
-        else if(num_answer === "4")
-        {
-            return;
-        }
-        else console.log("Please insert one of the available numbers.");
-    }    
-}
-
-/*
-async function like_message()
-{
-
-}
-
-
 async function select_chain()
 {
-    let i = 1;
-    Main.main(["freechains", "chains", "list"], function(ans){
-        ans = ans.slice(0,-1);
-        chains = ans.split(' ');      
-    });
-    await delay(1000)
-    let msn = "Please select chain: \n"
-    chains.forEach(element => {
-        msn += `${i} - ${element}\n`;
-        i += 1;
-    });
-    while (true)
-    {
-        num_chains = input.question(msn)-1;
-        if (num_chains <= (chains.length-1))
-        {
-            break;
-        }
-        else
-        {
-            console.log("Invalid number");
-        }
-    }
     while (true) {
-        let num_answer = input.question(options_select_chain);
-        if (num_answer === "1")
-        {
-            let msn_post;
-            while(true)
-            {
-                msn_post = input.question("What do you want to post? \n");
-                if(msn_post != '') break;
-            }
-            Main.main(["freechains", "chain", chains[num_chains], "post", "inline", msn_post, `--sign=${pass_file[2]}`], (ans) => {process.stdout.write(ans)});
-            await delay(2000);         
-        }
         else if (num_answer === "2")
         {
-            let block;
-            let hash;
-            let payload;
-            let json_block;
-            let j;
-            i = 1;
-            Main.main(["freechains", "chain", chains[num_chains], "consensus"], (ans) => {hash = ans;});
-            await delay(1000);
-            hash = hash.slice(0,-1);
-            hash = hash.split(' ');
-            if(hash.length > 0)
-            {
-                for(i = 1; i < hash.length; i++)
-                {
-                    Main.main(["freechains", "chain", chains[num_chains], "get", "payload", hash[i]], (ans) => {payload = ans;});
-                    await delay(1000);
-                    payload = payload.split('\n');
-                    payload.splice(0,1);
-                    payload = payload.join('\n');
-                    if(payload == '')
-                    {
-                        Main.main(["freechains", "chain", chains[num_chains], "get", "block", hash[i]], (ans) => {block = ans;});
-                        await delay(1000);
-
-                        block = block.split('\n');
-                        block.splice(0,1);
-                        block = block.join('\n');
-
-                        json_block = JSON.parse(block);
-                        if(json_block.like.n == 1)
-                        {
-                            for(j = 0; j < hash.length;j++)
-                            {
-                                if (json_block.like.hash == hash[j])
-                                {
-                                    payload = `Mensagem ${j} recebeu um like`;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    console.log(`Mensagem ${i}:\n ${payload}`);
-                }
-            }
-            else
-            {
-                console.log("There are no messages in this chain");
-            }
         }
         else if (num_answer === "3") //Like
         {
@@ -205,87 +50,165 @@ async function select_chain()
 
             return;
         }
-        else if (num_answer === "5") //Show Reputation Amount
-        {
-            return;
-        }
-        else if (num_answer === "6")
-        {
-            while (true)
-            {
-                num_chains = input.question(msn)-1;
-                if (num_chains <= (chains.length-1))
-                {
-                    break;
-                }
-                else
-                {
-                    console.log("Invalid number");
-                }
-            }
-        }
-        else if (num_answer === "7")
-        {
-            return;
-        }
-        else console.log("Please insert one of the available numbers.");
-    }
-}
-
-async function main_reddit()
-{
-
-    while (true) {
-        let num_answer = input.question(options_main);
-        if(num_answer === "1")
-        {
-            await chain_menu();
-        }
-        else if(num_answer === "2") 
-        {
-        }
-        else console.log("Invalid number");
     }
 }
 */
-async function start()
+async function show(arg)
 {
-    //COLOCAR O START DEPOIS DE VERIFICAR A SENHA
-    let user = input.question("Please insert your username: ");
-    Main.main(["freechains-host", "start", `/tmp/${user}`]);
+    let block;
+    let hash;
+    let payload;
+    let json_block;
+    let j;
+    i = 1;
+    Main.main(["freechains", "chain",  `#${js.username[js.current_select].select_subreddit}`, "consensus", `--port=${js.username[js.current_select].port}`], (ans) => {hash = ans;});
     await delay(1000);
-
-    pass_file = fs.readFileSync(`/tmp/${user}/password.txt`,{ encoding: 'utf8', flag: 'r' });
-    pass_file = pass_file.split('\n');
-    await delay(1000);
-
-    let password = input.question("Please insert your password: ");
-    Main.main(["freechains", "keys", "shared", password], (ans) => {
-        if(ans != (pass_file[0] + "\n"))
+    hash = hash.slice(0,-1);
+    hash = hash.split(' ');
+    if(hash.length > 1)
+    {
+        for(i = 1; i < hash.length; i++)
         {
-            console.log("Incorrect password!");
-            process.exit();
-        }
-    });
-    await delay(1000);
+            Main.main(["freechains", "chain",  `#${js.username[js.current_select].select_subreddit}`, "get", "payload", hash[i], `--port=${js.username[js.current_select].port}`], (ans) => {payload = ans;});
+            await delay(1000);
+            payload = payload.split('\n');
+            payload.splice(0,1);
+            payload = payload.join('\n');
+/*            if(payload == '')
+            {
+                Main.main(["freechains", "chain", chains[num_chains], "get", "block", hash[i]], (ans) => {block = ans;});
+                await delay(1000);
 
-    Main.main(["freechains", "keys", "pubpvt", password], (ans) => {
-        if(ans != (pass_file[1] + " " + pass_file[2] + "\n"))
-        {
-            console.log("Incorrect password!");
-            process.exit();
+                block = block.split('\n');
+                block.splice(0,1);
+                block = block.join('\n');
+
+                json_block = JSON.parse(block);
+                if(json_block.like.n == 1)
+                {
+                    for(j = 0; j < hash.length;j++)
+                    {
+                        if (json_block.like.hash == hash[j])
+                        {
+                            payload = `Mensagem ${j} recebeu um like`;
+                            break;
+                        }
+                    }
+                }
+            }*/
+            console.log(`Mensagem ${i}:\n ${payload}`);
         }
-    });
-    await delay(1000);
+    }
+    else
+    {
+        console.log("There are no messages in this chain");
+    }
+}
+
+async function like(arg)
+{
+//    if(js.username[js.current_select].select_subreddit == "")
+ //   {
+  //      console.log("Select a subreddit first.");
+   // }
+    console.log(arg);
+}
+
+async function start(arg)
+{
+    let i;
+    for(i = 0; i < js.username.length; i++)
+    {
+        if(arg[1] == js.username[i].user)
+        {
+            Main.main(["freechains", "keys", "pubpvt", arg[2], `--port=${js.username[i].port}`], (ans) => {
+                if(ans != (js.username[i].password[0] + " " + js.username[i].password[1] + "\n"))
+                {
+                    console.log("Incorrect password!");
+                    process.exit();
+                }
+            });
+            await delay(1000);
+
+            if(arg[3] != undefined)
+            {
+                js.username[i].port = arg[3];
+            }
+          
+            js.current_select = i;
+
+            console.log("Log in successful")
+
+            break;
+        }
+    }
+    js.login = true;
+}
+
+async function leave(arg)
+{
+    let j;
+    for (j = 0; j < js.username[js.current_select].subreddits.length; j++)
+    {
+        if (arg[1] == js.username[js.current_select].subreddits[j])
+        {
+            Main.main(["freechains", "chains", "leave", `#${arg[1]}`, `--port=${js.username[js.current_select].port}`], () => {
+                console.log("Left subreddit");
+            })
+            await delay(2000);
+            js.username[js.current_select].subreddits.splice(j,j);
+            break;   
+        }
+        else if(j == js.username[js.current_select].subreddits.length-1)
+        {
+            console.log("Subreddit not found");
+        }
+    }
 
 }
 
-async function create_join()
+async function post(arg)
 {
-    let name_chain = input.question("Please, insert name of the chain you want to create/join: ");
+    if(js.username[js.current_select].select_subreddit == "")
+    {
+        console.log("Select a subreddit first.");
+    }
+    else
+    {
+        Main.main(["freechains", "chain", `#${js.username[js.current_select].select_subreddit}`, "post", "inline", arg[1], `--sign=${js.username[js.current_select].password[1]}`, `--port=${js.username[js.current_select].port}`], (ans) => {process.stdout.write(ans)});
+        await delay(2000);         
+    }
 
-    Main.main(["freechains", "chains", "join", name_chain, pass_file[1]], () => {})
+}
+
+async function select(arg)
+{
+    let j;
+    for (j = 0; j < js.username[js.current_select].subreddits.length; j++)
+    {
+        if (arg[1] == js.username[js.current_select].subreddits[j])
+        {
+            js.username[js.current_select].select_subreddit = js.username[js.current_select].subreddits[j];
+            console.log(`${arg[1]} selected.`);
+            break;   
+        }
+        else if(j == js.username[js.current_select].subreddits.length-1)
+        {
+            console.log("Subreddit not found");
+        }
+    }
+
+
+}
+
+async function create_join(arg)
+{
+
+    Main.main(["freechains", "chains", "join", `#${arg[1]}`, js.username[js.current_select].password[0], `--port=${js.username[js.current_select].port}`], () => {
+           console.log("Subreddit created/joined!");
+    })
     await delay(2000);
+    js.username[js.current_select].subreddits.push(arg[1]);
 
 }
 
@@ -301,35 +224,125 @@ async function main(arg)
     }
     else
     {
-        var js = JSON.parse(fs.readFileSync("config.json"));
-        console.log(js);
-/*        switch (arg[0])
+        js = JSON.parse(fs.readFileSync("config.json"));
+//        console.log(js);
+        if (js.login == false && arg[0] != "login")
         {
-            case "login":
-                break;
-            case "update":
-                break;
-            case "create":
-                await create_join();
-                break;
-            case "join":
-                break;
-            case "list":
-                break;
-            case "leave":
-                break;
-            case "post":
-                break;
-            case "show":
-                break;
-            case "dislike":
-            case "like":
-                break;
-            case "search":
-                break;
-            default:
-                console.log("Command not recognized!");
-        }*/
+            console.log("You must first login before using reddit!");
+        }
+        else
+        {
+            let s_like = "like"
+            switch (arg[0])
+            {
+                case "login":
+                    if(arg.length < 3 || arg.length > 4)
+                    {
+                        console.log("Wrong number of arguments.");
+                    }
+                    else
+                    {
+                        await start(arg);
+                    }
+                    break;
+                case "logoff":
+                    if(arg.length != 1)
+                    {
+                        console.log("Wrong number of arguments.");
+                    }
+                    else
+                    {
+                        js.username[js.current_select].select_subreddit = "";
+                        js.current_select = 0; 
+                        js.login = false;
+                    }
+                    break;
+                case "join":
+                case "create":
+                    if(arg.length != 2)
+                    {
+                        console.log("Wrong number of arguments.");
+                    }
+                    else
+                    {
+                        await create_join(arg);
+                    }
+                    break;
+                case "list":
+                    if(arg.length != 1)
+                    {
+                        console.log("Wrong number of arguments.");
+                    }
+                    else
+                    {
+                        js.username[js.current_select].subreddits.forEach(function(entry) {
+                            console.log(entry);
+                        });
+                    }
+                    break;
+                case "leave":
+                    if(arg.length != 2)
+                    {
+                        console.log("Wrong number of arguments.");
+                    }
+                    else
+                    {
+                        await leave(arg);
+                    }
+                    break;
+                case "select":
+                    if(arg.length != 2)
+                    {
+                        console.log("Wrong number of arguments.");
+                    }
+                    else
+                    {
+                        await select(arg);
+                    }
+                    break;
+                case "post":
+                    if(arg.length != 2)
+                    {
+                        console.log("Wrong number of arguments.");
+                    }
+                    else
+                    {
+                        await post(arg);
+                    }
+                    break;
+                case "show":
+                    if(arg.length != 1)
+                    {
+                        console.log("Wrong number of arguments.");
+                    }
+                    else
+                    {
+                        await show(arg);
+                    }
+                    break;
+                case "dislike":
+                    s_like = "dislike";                
+                case "like":
+                    arg.push(s_like);
+                    if(arg.length != 3)
+                    {
+                        console.log("Wrong number of arguments.");
+                    }
+                    else
+                    {
+                        await like(arg);
+                    }                    
+                    break;
+                case "search":
+                    break;
+                case "update":
+                    break;
+                default:
+                    console.log("Command not recognized!");
+            }
+        }
+        fs.writeFileSync("config.json", JSON.stringify(js, null, 2));
+
     }
 }
 //main_reddit();

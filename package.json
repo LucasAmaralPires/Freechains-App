@@ -23,9 +23,5 @@
   "bugs": {
     "url": "https://github.com/LucasAmaralPires/Freechains-Node/issues"
   },
-  "homepage": "https://github.com/LucasAmaralPires/Freechains-Node#readme",
-  "dependencies": {
-    "crypto-js": "^4.1.1",
-    "readline-sync": "^1.4.10"
-  }
+  "homepage": "https://github.com/LucasAmaralPires/Freechains-Node#readme"
 }
