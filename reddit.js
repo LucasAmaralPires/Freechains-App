@@ -117,6 +117,18 @@ async function like(arg)
 async function start(arg)
 {
     let i;
+
+    js = {
+        "user": arg[1],
+        "password": [
+          "41783E6207C61E0ED6499C7EE800897E2930610623C3EDFAA8EE8F6ADE1593B5",
+          "DAF8C7C6A5B1127624007983F1A3235042F7382E9E1D859D9949E19A99DA528341783E6207C61E0ED6499C7EE800897E2930610623C3EDFAA8EE8F6ADE1593B5"
+        ],
+        "port": "8330",
+        "subreddits": [],
+        "select_subreddit": ""
+      };
+
     for(i = 0; i < js.username.length; i++)
     {
         if(arg[1] == js.username[i].user)
@@ -142,7 +154,7 @@ async function start(arg)
             break;
         }
     }
-    js.login = true;
+    fs.writeFileSync("config.json", JSON.stringify(js, null, 2));                
 }
 
 async function leave(arg)
@@ -224,8 +236,31 @@ async function main(arg)
     }
     else
     {
-        js = JSON.parse(fs.readFileSync("config.json"));
+        try
+        {
+            js = JSON.parse(fs.readFileSync("config.json"));
 //        console.log(js);
+
+        }
+        catch(err)
+        {
+            if(arg[0] == "login")
+            {
+                if(arg.length < 3 || arg.length > 4)
+                {
+                    console.log("Wrong number of arguments.");
+                }
+                else
+                {
+                    await start(arg);
+                }
+            }
+            else
+            {
+                console.log("You must first login before using reddit!");
+            }
+        }
+/*
         if (js.login == false && arg[0] != "login")
         {
             console.log("You must first login before using reddit!");
@@ -342,9 +377,8 @@ async function main(arg)
             }
         }
         fs.writeFileSync("config.json", JSON.stringify(js, null, 2));
-
+*/
     }
 }
-//main_reddit();
 
 main(process.argv.slice(2));
